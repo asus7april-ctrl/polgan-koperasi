@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kredit Barang - Koperasi Pemasaran Sinergi Kreasi Mandiri</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        polgan: {
+                            red: '#D32F2F',
+                            darkred: '#9A0007',
+                            navy: '#0D47A1',
+                            blue: '#1976D2',
+                            light: '#F5F7FA',
+                            gold: '#FFC107'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition { transition: transform 0.3s ease-in-out; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #888; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
+
+    
+    <!-- Top Bar Header -->
+    <header class="bg-gradient-to-r from-polgan-darkred via-polgan-red to-polgan-navy text-white shadow-md no-print sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-1.5 rounded-lg shadow-inner">
+                    <i class="fa-solid fa-handshake-angle text-polgan-red text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm sm:text-base leading-tight tracking-wide">KOPERASI PEMASARAN SINERGI KREASI MANDIRI</h1>
+                    <p class="text-xs text-red-100 flex items-center space-x-1">
+                        <span>Politeknik Ganesha Medan</span>
+                        <span class="inline-block w-1 h-1 bg-white rounded-full mx-1"></span>
+                        <span class="bg-yellow-400 text-gray-900 font-bold px-1.5 py-0.2 rounded text-[10px]">Metode Waterfall</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- User Header Controls -->
+            <div id="userHeaderArea" class="flex items-center space-x-3">
+                <!-- Will be dynamically updated -->
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside id="sidebar" class="bg-white w-64 border-r border-gray-200 flex-shrink-0 hidden md:flex flex-col justify-between shadow-sm no-print">
+            <div class="p-4 space-y-6">
+                <!-- User Profile Summary Box -->
+                <div id="sidebarUserBox" class="bg-gradient-to-br from-red-50 to-blue-50 p-3.5 rounded-xl border border-gray-200">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="space-y-1" id="navigationContainer">
+                    <!-- Dynamic Navigation links injected by JS based on user role -->
+                </nav>
+            </div>
+
+            <!-- Footer Info Sidebar -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50 text-xs text-gray-500 rounded-b">
+                <p class="font-semibold text-gray-700">Aplikasi Kredit Barang v1.0</p>
+                <p>Nazzwa Nabila Putri (23012249)</p>
+                <p class="text-[10px] text-gray-400 mt-1">D3 Manajemen Informatika - Polgan</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50" id="mainContent">
+            
+            <div id="toastNotification" class="hidden fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-xl flex items-center space-x-3 transition-all duration-300 transform translate-y-0">
+                <i id="toastIcon" class="fa-solid fa-circle-check text-green-400 text-lg"></i>
+                <span id="toastMessage" class="text-sm font-medium">Notifikasi Sistem</span>
+            </div>
+
+            <!-- Dynamic View Pages Containers -->
+            
+            <!-- PAGE: LOGIN MODAL / SCREEN -->
+            <div id="page-login" class="tab-content active max-w-md mx-auto my-8 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-br from-polgan-red to-polgan-navy p-6 text-white text-center">
+                    <div class="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center text-polgan-red shadow-lg mb-3">
+                        <i class="fa-solid fa-shield-halved text-4xl"></i>
+                    </div>
+                    <h2 class="text-xl font-bold">Portal Masuk Sistem</h2>
+                    <p class="text-xs text-gray-200 mt-1">Koperasi Pemasaran Sinergi Kreasi Mandiri</p>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-5">
+                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Peran / Akun</label>
+                            <select id="loginRoleSelect" onchange="updateDefaultUsername()" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-polgan-red focus:border-polgan-red text-sm font-medium bg-gray-50">
+                                <option value="anggota">Anggota Koperasi (Pengkredit)</option>
+                                <option value="petugas">Petugas Kredit Koperasi</option>
+                                <option value="admin">Admin System / Pengurus</option>
+                            </select>
+                        </div>
+
+                        <!-- Dynamic Username Input for Petugas and Admin (Hidden for Anggota) -->
+                        <div id="usernameContainer" class="hidden">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Username / ID Petugas / Admin <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                <input type="text" id="loginUsername" class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-polgan-red text-sm" placeholder="Masukkan ID / Username">
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Password Input for Petugas and Admin -->
+                        <div id="passwordContainer" class="hidden">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Kata Sandi <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                    <i class="fa-solid fa-key"></i>
+                                </span>
+                                <input type="password" id="loginPassword" class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-polgan-red text-sm" placeholder="Masukkan sandi">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-polgan-red hover:bg-polgan-darkred text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition duration-200 flex items-center justify-center space-x-2">
+                            <span>Masuk Ke Aplikasi</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <!-- Quick Demo Role Switch Buttons -->
+                    <div class="pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500 text-center mb-2 font-medium">Uji Coba Cepat Sebagai:</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="quickLogin('anggota')" class="px-2 py-1.5 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold rounded hover:bg-green-100">
+                                <i class="fa-solid fa-user-graduate block text-sm mb-0.5"></i> Anggota
+                            </button>
+                            <button onclick="quickLogin('petugas')" class="px-2 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold rounded hover:bg-blue-100">
+                                <i class="fa-solid fa-user-gear block text-sm mb-0.5"></i> Petugas
+                            </button>
+                            <button onclick="quickLogin('admin')" class="px-2 py-1.5 bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold rounded hover:bg-purple-100">
+                                <i class="fa-solid fa-user-shield block text-sm mb-0.5"></i> Admin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-katalog" class="tab-content space-y-6">
+                <!-- Hero Header Banner -->
+                <div class="bg-gradient-to-r from-polgan-navy to-blue-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="bg-yellow-400 text-gray-900 text-xs font-extrabold uppercase px-2.5 py-1 rounded-full">Katalog Kredit POLGAN MART</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Fasilitas Kredit Laptop & Barang Mahasiswa / Karyawan</h2>
+                        <p class="text-xs sm:text-sm text-blue-100 mt-2">Dapatkan kebutuhan kerja & kuliah seperti laptop KIP, barang elektronik, serta sembako dengan cicilan terjangkau dan proses mudah.</p>
+                    </div>
+                    <i class="fa-solid fa-laptop text-9xl text-white opacity-10 absolute -right-4 -bottom-6"></i>
+                </div>
+
+                <!-- Filter & Search Controls -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center space-x-2 flex-1">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+                            <input type="text" id="katalogSearchInput" onkeyup="filterKatalog()" placeholder="Cari nama barang, laptop, merk, atau spesifikasi..." class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <select id="katalogKategoriSelect" onchange="filterKatalog()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white font-medium">
+                            <option value="ALL">Semua Kategori</option>
+                            <option value="Laptop Mahasiswa">Laptop Mahasiswa KIP</option>
+                            <option value="Elektronik">Elektronik & Gadget</option>
+                            <option value="Perlengkapan Rumah">Perlengkapan Rumah</option>
+                            <option value="Sembako">Sembako Paket</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Items Grid Container -->
+                <div id="katalogItemsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Dynamic Items injected via JS -->
+                </div>
+            </div>
+
+            <div id="page-pengajuan" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+                    <div class="bg-polgan-red text-white p-5 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold flex items-center space-x-2">
+                                <i class="fa-solid fa-file-signature"></i>
+                                <span>Formulir Pengajuan Kredit Barang</span>
+                            </h2>
+                            <p class="text-xs text-red-100 mt-1">Lengkapi data diri (Nama, No HP, Kartu Keluarga) untuk proses verifikasi Koperasi Sinergi Kreasi Mandiri</p>
+                        </div>
+                        <span class="bg-white text-polgan-red font-bold text-xs px-3 py-1 rounded-full shadow">Sistem Web Waterfall</span>
+                    </div>
+
+                    <form id="formKredit" onsubmit="submitPengajuanKredit(event)" class="p-6 sm:p-8 space-y-6">
+                        
+                        <!-- Selected Item Preview Banner -->
+                        <div id="selectedItemBanner" class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center border text-polgan-navy shadow-sm">
+                                    <i id="selectedItemIcon" class="fa-solid fa-laptop text-2xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Barang Yang Dipilih</span>
+                                    <h3 id="selectedItemTitle" class="font-bold text-gray-900 text-lg">Laptop Asus ExpertBook Core i5</h3>
+                                    <p id="selectedItemHarga" class="text-sm font-semibold text-polgan-red">Rp 8.500.000</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="switchTab('katalog')" class="text-xs bg-white text-blue-700 border border-blue-300 font-bold px-3 py-2 rounded-lg hover:bg-blue-100">
+                                Ubah Pilihan Barang
+                            </button>
+                        </div>
+
+                        <!-- User Required Data Fields (Nama, No HP, Kartu Keluarga) -->
+                        <div class="border-t border-gray-100 pt-4">
+                            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-id-card text-polgan-navy"></i>
+                                <span>1. Data Identitas Pemohon Kredit</span>
+                            </h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Lengkap Pengkredit <span class="text-red-500">*</span></label>
+                                    <input type="text" id="pengkreditNama" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red" placeholder="Masukkan Nama Lengkap">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nomor Handphone / WhatsApp <span class="text-red-500">*</span></label>
+                                    <input type="tel" id="pengkreditNoHp" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red" placeholder="Masukkan Nomor HP / WhatsApp">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nomor Kartu Keluarga (KK) <span class="text-red-500">*</span></label>
+                                    <input type="text" id="pengkreditNoKK" required pattern="[0-9]{16}" title="Nomor KK harus 16 digit angka" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red" placeholder="Masukkan 16 Digit Nomor KK">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">NIK (Nomor Induk Kependudukan)</label>
+                                    <input type="text" id="pengkreditNIK" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red" placeholder="Masukkan NIK">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Status Pengkredit</label>
+                                    <select id="pengkreditStatusType" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red">
+                                        <option value="Mahasiswa KIP Polgan">Mahasiswa KIP Politeknik Ganesha Medan</option>
+                                        <option value="Mahasiswa Reguler">Mahasiswa Reguler Polgan</option>
+                                        <option value="Dosen / Karyawan">Dosen / Staff Karyawan</option>
+                                        <option value="Masyarakat Umum">Masyarakat Umum / UMKM Partner</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Alamat Lengkap Sesuai KK</label>
+                                    <input type="text" id="pengkreditAlamat" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-polgan-red" placeholder="Jl. Veteran No. 194, Medan Marelan">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Credit Calculation Scheme -->
+                        <div class="border-t border-gray-100 pt-4">
+                            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-calculator text-polgan-navy"></i>
+                                <span>2. Skema Jangka Waktu & Simulasi Cicilan</span>
+                            </h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Tenor / Jangka Waktu (Bulan)</label>
+                                    <select id="pengkreditTenor" onchange="recalculateCreditSim()" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold text-gray-800 bg-white">
+                                        <option value="3">3 Bulan (Cicilan Singkat)</option>
+                                        <option value="6" selected>6 Bulan (Standar)</option>
+                                        <option value="12">12 Bulan (1 Tahun)</option>
+                                        <option value="18">18 Bulan (1.5 Tahun)</option>
+                                        <option value="24">24 Bulan (2 Tahun - Khusus Laptop KIP)</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Metode Pembayaran Angsuran</label>
+                                    <select id="pengkreditPaymentMethod" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm bg-white">
+                                        <option value="Auto Debet Gaji / Beasiswa">Auto Debet Gaji / Beasiswa KIP</option>
+                                        <option value="Transfer Bank Virtual Account">Transfer Bank / E-Wallet</option>
+                                        <option value="Bayar Tunai di Kasir Koperasi">Bayar Cash di Kasir KSPS Polgan</option>
+                                    </select>
+                                </div>
+
+                                <!-- Summary Display Box -->
+                                <div class="sm:col-span-2 bg-white p-4 rounded-lg border border-blue-200 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                                    <div>
+                                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Harga Pokok Barang</p>
+                                        <p id="simHargaBarang" class="text-base font-bold text-gray-800">Rp 0</p>
+                                    </div>
+                                    <div class="border-t sm:border-t-0 sm:border-l border-gray-200 pt-2 sm:pt-0">
+                                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Margin Layanan Koperasi (1%/bln)</p>
+                                        <p id="simMarginTotal" class="text-base font-bold text-blue-600">Rp 0</p>
+                                    </div>
+                                    <div class="border-t sm:border-t-0 sm:border-l border-gray-200 pt-2 sm:pt-0">
+                                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Angsuran per Bulan</p>
+                                        <p id="simAngsuranBulanan" class="text-lg font-extrabold text-polgan-red">Rp 0 / bln</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Upload Simulation -->
+                        <div class="border-t border-gray-100 pt-4">
+                            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2 flex items-center space-x-2">
+                                <i class="fa-solid fa-file-arrow-up text-polgan-navy"></i>
+                                <span>3. Lampiran Dokumen Syarat Kredit</span>
+                            </h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+                                    <i class="fa-solid fa-address-card text-2xl text-gray-400 mb-1"></i>
+                                    <p class="text-xs font-semibold text-gray-700">Foto / Scan Kartu Keluarga (KK)</p>
+                                    <p class="text-[10px] text-gray-400">Format JPG, PNG atau PDF (Max 2MB)</p>
+                                    <input type="file" accept="image/*,.pdf" class="mt-2 text-xs text-gray-500 mx-auto w-full">
+                                </div>
+
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+                                    <i class="fa-solid fa-id-badge text-2xl text-gray-400 mb-1"></i>
+                                    <p class="text-xs font-semibold text-gray-700">Foto Kartu Mahasiswa (KTM) / KTP</p>
+                                    <p class="text-[10px] text-gray-400">Format JPG, PNG (Max 2MB)</p>
+                                    <input type="file" accept="image/*" class="mt-2 text-xs text-gray-500 mx-auto w-full">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agreement & Submit -->
+                        <div class="pt-4 flex items-center justify-between border-t border-gray-200">
+                            <label class="flex items-center space-x-2 text-xs text-gray-600 cursor-pointer">
+                                <input type="checkbox" required class="rounded text-polgan-red focus:ring-polgan-red w-4 h-4">
+                                <span>Saya menyatakan data Nama, No HP, dan Kartu Keluarga (KK) adalah sah dan benar.</span>
+                            </label>
+
+                            <button type="submit" class="bg-polgan-red hover:bg-polgan-darkred text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition flex items-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Kirim Pengajuan Kredit</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="page-status" class="tab-content space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">Status & Tracker Pengajuan Kredit Saya</h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Monitoring alur pengembangan dan persetujuan berbasis tahapan Metode Waterfall SDLC</p>
+                    </div>
+                    <button onclick="renderStatusPengajuan()" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold flex items-center space-x-1 self-start md:self-auto">
+                        <i class="fa-solid fa-rotate text-sm"></i>
+                        <span>Muat Ulang Data</span>
+                    </button>
+                </div>
+
+                <!-- Waterfall Development Method Steps Visualizer -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-4">Metode Waterfall SDLC dalam Proses Kredit:</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-center text-xs">
+                        <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-lg">
+                            <div class="w-6 h-6 bg-blue-600 text-white rounded-full mx-auto flex items-center justify-center font-bold text-xs mb-1">1</div>
+                            <span class="font-bold text-blue-900 block">Analisis Kebutuhan</span>
+                            <span class="text-[10px] text-gray-500">Input Data Nama, HP, KK</span>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-lg">
+                            <div class="w-6 h-6 bg-blue-600 text-white rounded-full mx-auto flex items-center justify-center font-bold text-xs mb-1">2</div>
+                            <span class="font-bold text-blue-900 block">Desain Sistem</span>
+                            <span class="text-[10px] text-gray-500">Kalkulasi Tenor Kredit</span>
+                        </div>
+                        <div class="bg-yellow-50 border border-yellow-300 p-2.5 rounded-lg">
+                            <div class="w-6 h-6 bg-yellow-500 text-white rounded-full mx-auto flex items-center justify-center font-bold text-xs mb-1">3</div>
+                            <span class="font-bold text-yellow-900 block">Verifikasi Petugas</span>
+                            <span class="text-[10px] text-gray-500">Validasi Berkas & Syarat</span>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-2.5 rounded-lg opacity-60">
+                            <div class="w-6 h-6 bg-gray-400 text-white rounded-full mx-auto flex items-center justify-center font-bold text-xs mb-1">4</div>
+                            <span class="font-bold text-gray-700 block">Persetujuan Pengurus</span>
+                            <span class="text-[10px] text-gray-500">ACC Kredit Barang</span>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-2.5 rounded-lg opacity-60">
+                            <div class="w-6 h-6 bg-gray-400 text-white rounded-full mx-auto flex items-center justify-center font-bold text-xs mb-1">5</div>
+                            <span class="font-bold text-gray-700 block">Penyerahan Barang</span>
+                            <span class="text-[10px] text-gray-500">Pencairan & Angsuran</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table of Status -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                                    <th class="p-4">ID Kredit</th>
+                                    <th class="p-4">Detail Pengkredit & KK</th>
+                                    <th class="p-4">Barang & Tenor</th>
+                                    <th class="p-4">Total & Angsuran</th>
+                                    <th class="p-4">Status Pengajuan</th>
+                                    <th class="p-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statusPengajuanTableBody" class="divide-y divide-gray-100 text-sm">
+                                <!-- JS Injected Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-verifikasi" class="tab-content space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase">Modul Hak Akses Petugas</span>
+                        <h2 class="text-2xl font-extrabold text-gray-900 mt-1">Persetujuan & Verifikasi Pengajuan Kredit</h2>
+                        <p class="text-xs text-gray-500">Periksa kecocokan data Nama, Nomor HP, dan Kartu Keluarga (KK) pemohon sebelum disetujui.</p>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-bold text-gray-500">Filter Status:</span>
+                        <select id="filterStatusPetugas" onchange="renderPetugasVerifikasiTable()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white font-medium">
+                            <option value="ALL">Semua Status</option>
+                            <option value="Menunggu Verifikasi" selected>Menunggu Verifikasi</option>
+                            <option value="Disetujui">Disetujui</option>
+                            <option value="Ditolak">Ditolak</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Applications Table for Petugas -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 border-b border-gray-200 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                                    <th class="p-4">No</th>
+                                    <th class="p-4">Pengkredit & Kontak</th>
+                                    <th class="p-4">No. Kartu Keluarga (KK)</th>
+                                    <th class="p-4">Barang Kredit</th>
+                                    <th class="p-4">Tenor & Cicilan</th>
+                                    <th class="p-4">Status Saat Ini</th>
+                                    <th class="p-4 text-center">Tindakan Petugas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="petugasVerifikasiTableBody" class="divide-y divide-gray-100 text-sm">
+                                <!-- JS Injected Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-angsuran" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Form Input Bayar Angsuran -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-cash-register text-polgan-red"></i>
+                            <span>Catat Pembayaran Angsuran</span>
+                        </h3>
+                        <p class="text-xs text-gray-500">Input transaksi cicilan bulanan pengkredit anggota koperasi.</p>
+
+                        <form id="formBayarAngsuran" onsubmit="handleProcessPayment(event)" class="space-y-4 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Transaksi Kredit Disetujui</label>
+                                <select id="angsuranKreditSelect" onchange="loadAngsuranDetailInfo()" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs font-medium">
+                                    <!-- Dynamic options -->
+                                </select>
+                            </div>
+
+                            <div id="angsuranInfoBox" class="bg-gray-50 p-3 rounded-lg border text-xs space-y-1.5 hidden">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Nama Pengkredit:</span>
+                                    <span id="infoNama" class="font-bold text-gray-800">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">No. KK:</span>
+                                    <span id="infoKK" class="font-bold text-gray-800">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Cicilan / Bulan:</span>
+                                    <span id="infoNominalCicilan" class="font-bold text-polgan-red">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Sisa Angsuran:</span>
+                                    <span id="infoSisaTenor" class="font-bold text-blue-700">-</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nominal Pembayaran (Rp)</label>
+                                <input type="number" id="bayarNominalInput" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-800" placeholder="Rp 0">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Keterangan / Angsuran Ke-</label>
+                                <input type="text" id="bayarKeteranganInput" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs" placeholder="Contoh: Pembayaran Angsuran Ke-2">
+                            </div>
+
+                            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-receipt"></i>
+                                <span>Simpan Pembayaran & Cetak Struk</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Payment Logs Table -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-gray-800">Riwayat Pembayaran Angsuran</h3>
+                            <button onclick="printPaymentReport()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1">
+                                <i class="fa-solid fa-print"></i>
+                                <span>Cetak Laporan</span>
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-600 uppercase">
+                                        <th class="p-3">Tgl Bayar</th>
+                                        <th class="p-3">Nama Pengkredit</th>
+                                        <th class="p-3">Keterangan</th>
+                                        <th class="p-3">Nominal (Rp)</th>
+                                        <th class="p-3">Petugas Penerima</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="riwayatAngsuranTableBody" class="divide-y divide-gray-100 text-xs">
+                                    <!-- JS Injected Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="page-admin" class="tab-content space-y-6">
+                <!-- Dashboard Top Metrics Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Anggota</p>
+                            <h3 id="statTotalAnggota" class="text-2xl font-black text-gray-800 mt-1">24</h3>
+                            <span class="text-[10px] text-green-600 font-bold"><i class="fa-solid fa-arrow-up"></i> Pendiri & Mahasiswa</span>
+                        </div>
+                        <div class="w-12 h-12 bg-red-50 text-polgan-red rounded-xl flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pengajuan Aktif</p>
+                            <h3 id="statTotalPengajuan" class="text-2xl font-black text-blue-700 mt-1">0</h3>
+                            <span class="text-[10px] text-blue-600 font-bold">Proses Waterfall</span>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-50 text-polgan-navy rounded-xl flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Barang Katalog</p>
+                            <h3 id="statTotalBarang" class="text-2xl font-black text-purple-700 mt-1">6</h3>
+                            <span class="text-[10px] text-purple-600 font-bold">Laptop KIP & Sembako</span>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-50 text-purple-700 rounded-xl flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Kas Kredit</p>
+                            <h3 id="statTotalKas" class="text-xl font-black text-green-700 mt-1">Rp 48.500.000</h3>
+                            <span class="text-[10px] text-green-600 font-bold">Aman Koperasi</span>
+                        </div>
+                        <div class="w-12 h-12 bg-green-50 text-green-700 rounded-xl flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-vault"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Management Tabs & Tables -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <!-- Tab Buttons -->
+                    <div class="flex border-b border-gray-200 bg-gray-50 overflow-x-auto">
+                        <button onclick="switchAdminSubTab('barang')" id="adminTabBtn-barang" class="px-5 py-3 font-bold text-xs text-polgan-red border-b-2 border-polgan-red bg-white flex items-center space-x-2">
+                            <i class="fa-solid fa-laptop"></i>
+                            <span>Master Data Barang</span>
+                        </button>
+                        <button onclick="switchAdminSubTab('users')" id="adminTabBtn-users" class="px-5 py-3 font-bold text-xs text-gray-600 hover:text-gray-900 flex items-center space-x-2">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span>Data User & Role</span>
+                        </button>
+                        <button onclick="switchAdminSubTab('structure')" id="adminTabBtn-structure" class="px-5 py-3 font-bold text-xs text-gray-600 hover:text-gray-900 flex items-center space-x-2">
+                            <i class="fa-solid fa-sitemap"></i>
+                            <span>Struktur Organisasi (2025-2026)</span>
+                        </button>
+                    </div>
+
+                    <!-- Sub Tab: Data Barang -->
+                    <div id="adminSubTab-barang" class="p-6 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-gray-800 text-sm">Daftar Barang Kredit Koperasi (POLGAN MART)</h3>
+                            <button onclick="openModalAddBarang()" class="bg-polgan-red hover:bg-polgan-darkred text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center space-x-1">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah Barang Baru</span>
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-gray-100 border-b text-gray-600 font-bold uppercase">
+                                        <th class="p-3">Kode Barang</th>
+                                        <th class="p-3">Nama Barang</th>
+                                        <th class="p-3">Kategori</th>
+                                        <th class="p-3">Stok</th>
+                                        <th class="p-3">Harga Cash (Rp)</th>
+                                        <th class="p-3 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminBarangTableBody" class="divide-y divide-gray-100">
+                                    <!-- JS Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Sub Tab: Data User & Role -->
+                    <div id="adminSubTab-users" class="p-6 space-y-4 hidden">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-gray-800 text-sm">Pengguna Sistem & Role (Tabel 3.2 & 3.3 Database)</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-gray-100 border-b text-gray-600 font-bold uppercase">
+                                        <th class="p-3">User ID</th>
+                                        <th class="p-3">Nama User</th>
+                                        <th class="p-3">Username / NIM</th>
+                                        <th class="p-3">Role / Hak Akses</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminUsersTableBody" class="divide-y divide-gray-100">
+                                    <!-- JS Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Sub Tab: Organization Structure -->
+                    <div id="adminSubTab-structure" class="p-6 space-y-4 hidden">
+                        <h3 class="font-bold text-gray-800 text-sm mb-2">Struktur Organisasi Koperasi Sinergi Pemasaran Sejahtera (2025-2026)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-red-50 p-4 rounded-xl border border-red-200">
+                                <h4 class="font-extrabold text-polgan-red uppercase text-sm mb-2"><i class="fa-solid fa-user-tie"></i> Pengurus Utama</h4>
+                                <ul class="space-y-1 text-gray-700">
+                                    <li><strong>Ketua:</strong> Rico Imanta Ginting, M.Kom</li>
+                                    <li><strong>Sekretaris:</strong> M. Suhada WD, S.Kom</li>
+                                    <li><strong>Bendahara:</strong> Yus Epi, M.Ak</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                                <h4 class="font-extrabold text-polgan-navy uppercase text-sm mb-2"><i class="fa-solid fa-user-shield"></i> Dewan Pengawas</h4>
+                                <ul class="space-y-1 text-gray-700">
+                                    <li><strong>Ketua Pengawas:</strong> Diding Kusnady, S.Pd, MM</li>
+                                    <li><strong>Anggota Pengawas 1:</strong> Tim Audit Internal</li>
+                                    <li><strong>Anggota Pengawas 2:</strong> Pengawas Independen</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
+                                <h4 class="font-extrabold text-purple-900 uppercase text-sm mb-2"><i class="fa-solid fa-graduation-cap"></i> Tim Pembimbing TA</h4>
+                                <ul class="space-y-1 text-gray-700">
+                                    <li><strong>Dosen Pembimbing:</strong> Arpan, S.Kom., M.Kom</li>
+                                    <li><strong>Pembimbing Teknis:</strong> Rico Imanta Ginting, S.Kom., M.Kom</li>
+                                    <li><strong>Mahasiswa Peneliti:</strong> Nazzwa Nabila Putri (23012249)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="page-waterfall" class="tab-content space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 bg-polgan-red text-white rounded-xl">
+                            <i class="fa-solid fa-water text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-extrabold text-gray-900">Implementasi Metode Waterfall dalam Pengembangan Aplikasi</h2>
+                            <p class="text-xs text-gray-500">Berdasarkan Bab 2.5 & Gambar 2.1 Laporan Tugas Akhir Nazzwa Nabila Putri</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-polgan-red">
+                            <h3 class="font-bold text-gray-800 text-sm">1. Analisis Kebutuhan (Requirements)</h3>
+                            <p class="text-xs text-gray-600 mt-1">Mengidentifikasi kebutuhan pengkredit seperti pengumpulan data **Nama**, **Nomor HP**, **Kartu Keluarga (KK)**, serta hak akses berbeda antara Admin, Petugas, dan Anggota.</p>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-blue-600">
+                            <h3 class="font-bold text-gray-800 text-sm">2. Perancangan Sistem (System Design)</h3>
+                            <p class="text-xs text-gray-600 mt-1">Pemodelan UML (Use Case Diagram 2.8.4, Activity Diagram 3.51, Sequence Diagram 3.52) dan perancangan basis data relational (Tabel Role, User, Barang, Kategori, Supplier, Transaksi).</p>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-yellow-500">
+                            <h3 class="font-bold text-gray-800 text-sm">3. Implementasi (Implementation / Coding)</h3>
+                            <p class="text-xs text-gray-600 mt-1">Pembangunan antarmuka web dinamis terintegrasi JavaScript, Tailwind CSS, dan sistem validasi form yang adaptif serta siap pakai.</p>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-green-600">
+                            <h3 class="font-bold text-gray-800 text-sm">4. Pengujian (Testing)</h3>
+                            <p class="text-xs text-gray-600 mt-1">Pengujian simulasi kredit barang laptop KIP, verifikasi persetujuan oleh petugas, dan perhitungan otomatis angsuran tanpa kesalahan pencatatan manual.</p>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-purple-600">
+                            <h3 class="font-bold text-gray-800 text-sm">5. Pemeliharaan (Maintenance)</h3>
+                            <p class="text-xs text-gray-600 mt-1">Penyajian laporan riwayat kredit dan pembaharuan stok barang secara real-time pada Koperasi Sinergi Kreasi Mandiri.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+
+    <!-- Modal Add Item (Admin) -->
+    <div id="modalAddBarang" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-gray-800 text-base">Tambah Barang Kredit Baru</h3>
+                <button onclick="closeModalAddBarang()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form onsubmit="handleSaveBarang(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Kode Barang</label>
+                    <input type="text" id="addKodeBarang" required class="w-full p-2 border rounded text-xs" placeholder="BRG-007">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Barang</label>
+                    <input type="text" id="addNamaBarang" required class="w-full p-2 border rounded text-xs" placeholder="Laptop Lenovo ThinkPad i5">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Kategori</label>
+                    <select id="addKategoriBarang" class="w-full p-2 border rounded text-xs">
+                        <option value="Laptop Mahasiswa">Laptop Mahasiswa</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Perlengkapan Rumah">Perlengkapan Rumah</option>
+                        <option value="Sembako">Sembako</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Harga Cash (Rp)</label>
+                    <input type="number" id="addHargaBarang" required class="w-full p-2 border rounded text-xs" placeholder="7500000">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Stok Awal</label>
+                    <input type="number" id="addStokBarang" required class="w-full p-2 border rounded text-xs" placeholder="10">
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-3 border-t">
+                    <button type="button" onclick="closeModalAddBarang()" class="px-4 py-2 bg-gray-200 text-xs font-bold rounded">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-polgan-red text-white text-xs font-bold rounded">Simpan Barang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Data Logic & Event Handlers -->
+    <script>
+
+        // Pemetaaan Hak Akses Modul Sesuai Peran (Role Permission Authorization Mapping)
+        const rolePermissions = {
+            anggota: ['katalog', 'pengajuan', 'status', 'waterfall', 'login'],
+            petugas: ['verifikasi', 'angsuran', 'katalog', 'waterfall', 'login'],
+            admin: ['admin', 'verifikasi', 'angsuran', 'katalog', 'pengajuan', 'status', 'waterfall', 'login']
+        };
+
+        // System Users
+        const systemUsers = [
+            { id: 1, name: '', username: 'anggota', role: 'anggota', noHp: '', noKK: '' },
+            { id: 2, name: 'Petugas Kredit KSPS', username: 'petugas', role: 'petugas', noHp: '', noKK: '' },
+            { id: 3, name: 'Rico Imanta Ginting (Admin)', username: 'admin', role: 'admin', noHp: '', noKK: '' }
+        ];
+
+        // Master Data Barang Kredit
+        let masterBarang = [
+            { id: 1, kode: 'BRG-001', nama: 'Laptop Asus ExpertBook Core i5 (KIP)', kategori: 'Laptop Mahasiswa', harga: 8500000, stok: 15, icon: 'fa-laptop', desc: 'RAM 16GB, SSD 512GB. Laptop rekomendasi Wajib Mahasiswa KIP Progam Studi MI.' },
+            { id: 2, kode: 'BRG-002', nama: 'Laptop Acer Aspire Slim Ryzen 5', kategori: 'Laptop Mahasiswa', harga: 7200000, stok: 10, icon: 'fa-laptop', desc: 'Design tipis, baterai tahan lama, cocok untuk pemrograman & perkuliahan.' },
+            { id: 3, kode: 'BRG-003', nama: 'Smartphone Samsung Galaxy A55 5G', kategori: 'Elektronik', harga: 5800000, stok: 8, icon: 'fa-mobile-screen-button', desc: 'Kamera jernih 50MP, layar AMOLED 120Hz, NFC aktif.' },
+            { id: 4, kode: 'BRG-004', nama: 'TV LED Polytron 32 Inch Smart TV', kategori: 'Elektronik', harga: 2400000, stok: 6, icon: 'fa-tv', desc: 'Smart Android TV garansi resmi 5 tahun.' },
+            { id: 5, kode: 'BRG-005', nama: 'Kipas Angin Berdiri Miyako 16 Inch', kategori: 'Perlengkapan Rumah', harga: 450000, stok: 20, icon: 'fa-fan', desc: 'Hemat listrik, hembusan angin kencang.' },
+            { id: 6, kode: 'BRG-006', nama: 'Paket Sembako Sejahtera (Beras+Minyak+Gula)', kategori: 'Sembako', harga: 350000, stok: 50, icon: 'fa-basket-shopping', desc: 'Beras 10kg, Minyak 2L, Gula 2kg, Teh, Kopi.' }
+        ];
+
+        // Credit Applications Storage (Initialized with sample data)
+        let creditApplications = [
+            {
+                id: 'KRD-2026-001',
+                nama: '',
+                noHp: '',
+                noKK: '',
+                nik: '',
+                statusType: 'Mahasiswa KIP Polgan',
+                barangId: 1,
+                barangNama: 'Laptop Asus ExpertBook Core i5 (KIP)',
+                hargaCash: 8500000,
+                tenor: 12,
+                angsuranPerBulan: 779166,
+                status: 'Disetujui',
+                tanggal: '2026-03-10',
+                sisaSmt: 10
+            },
+            {
+                id: 'KRD-2026-002',
+                nama: 'Budi Santoso',
+                noHp: '',
+                noKK: '',
+                nik: '',
+                statusType: 'Dosen / Karyawan',
+                barangId: 3,
+                barangNama: 'Smartphone Samsung Galaxy A55 5G',
+                hargaCash: 5800000,
+                tenor: 6,
+                angsuranPerBulan: 1015000,
+                status: 'Menunggu Verifikasi',
+                tanggal: '2026-03-12',
+                sisaSmt: 6
+            }
+        ];
+
+        // Payment logs
+        let paymentLogs = [
+            { id: 'PAY-101', kreditId: 'KRD-2026-001', nama: '', nominal: 779166, tgl: '2026-03-15', ket: 'Pembayaran Angsuran Ke-1', petugas: 'Petugas Kredit KSPS' },
+            { id: 'PAY-102', kreditId: 'KRD-2026-001', nama: '', nominal: 779166, tgl: '2026-04-10', ket: 'Pembayaran Angsuran Ke-2', petugas: 'Petugas Kredit KSPS' }
+        ];
+
+        // Active Session State
+        let currentUser = null;
+        let selectedItemForCredit = masterBarang[0];
+
+        window.onload = function() {
+            // Default load login screen
+            quickLogin('anggota');
+            renderKatalogItems();
+            renderStatusPengajuan();
+            renderPetugasVerifikasiTable();
+            renderRiwayatAngsuran();
+            renderAdminTables();
+        };
+
+        // Switch role demo login helper
+        function quickLogin(role) {
+            const found = systemUsers.find(u => u.role === role);
+            document.getElementById('loginRoleSelect').value = role;
+
+            const usrContainer = document.getElementById('usernameContainer');
+            const usrInput = document.getElementById('loginUsername');
+            const pwdContainer = document.getElementById('passwordContainer');
+            const pwdInput = document.getElementById('loginPassword');
+
+            if (role === 'petugas' || role === 'admin') {
+                usrContainer.classList.remove('hidden');
+                usrInput.required = true;
+                usrInput.value = found ? found.username : role;
+
+                pwdContainer.classList.remove('hidden');
+                pwdInput.required = true;
+                pwdInput.value = '';
+            } else {
+                usrContainer.classList.add('hidden');
+                usrInput.required = false;
+                usrInput.value = 'anggota';
+
+                pwdContainer.classList.add('hidden');
+                pwdInput.required = false;
+                pwdInput.value = '';
+            }
+        }
+
+        function updateDefaultUsername() {
+            const role = document.getElementById('loginRoleSelect').value;
+            quickLogin(role);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('loginRoleSelect').value;
+
+            // Jika role adalah Anggota, langsung izinkan masuk tanpa Username/NIM/Sandi
+            if (role === 'anggota') {
+                const user = systemUsers.find(u => u.role === 'anggota');
+                currentUser = user;
+                showToast('Login berhasil! Masuk sebagai Anggota Koperasi', 'success');
+                updateUIForLoggedInUser();
+                switchTab('katalog');
+                return;
+            }
+
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword') ? document.getElementById('loginPassword').value.trim() : '';
+
+            // Verifikasi Kata Sandi untuk Petugas dan Admin
+            if ((role === 'petugas' || role === 'admin') && password !== 'polgankoperasi') {
+                showToast('Kata sandi yang Anda masukkan salah!', 'error');
+                return;
+            }
+
+            // Cari user berdasarkan username dan role yang dipilih
+            const user = systemUsers.find(u => u.username.toLowerCase() === username.toLowerCase() && u.role === role);
+
+            if (!user) {
+                showToast(`Akun dengan Username "${username}" tidak ditemukan untuk peran ${role.toUpperCase()}!`, 'error');
+                return;
+            }
+
+            currentUser = user;
+            showToast(`Login berhasil! Masuk sebagai ${user.name || role.toUpperCase()} (${user.role.toUpperCase()})`, 'success');
+            updateUIForLoggedInUser();
+            
+            if (user.role === 'petugas') switchTab('verifikasi');
+            else if (user.role === 'admin') switchTab('admin');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            showToast('Anda telah keluar dari aplikasi', 'info');
+            switchTab('login');
+            renderUserHeader();
+        }
+
+        function updateUIForLoggedInUser() {
+            renderUserHeader();
+            renderSidebarNav();
+            renderSidebarUserBox();
+        }
+
+        function renderUserHeader() {
+            const area = document.getElementById('userHeaderArea');
+            if (!currentUser) {
+                area.innerHTML = `
+                    <button onclick="switchTab('login')" class="bg-white text-polgan-red font-bold text-xs px-3.5 py-2 rounded-lg shadow hover:bg-gray-100">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i> Masuk Sistem
+                    </button>
+                `;
+            } else {
+                area.innerHTML = `
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold leading-tight">${currentUser.name || 'Anggota Koperasi'}</p>
+                        <span class="text-[10px] bg-white text-polgan-navy px-1.5 py-0.5 rounded font-bold uppercase">${currentUser.role}</span>
+                    </div>
+                    <button onclick="handleLogout()" class="bg-red-800 hover:bg-red-900 text-white font-bold text-xs px-3 py-1.5 rounded-lg border border-red-700 flex items-center space-x-1">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span class="hidden sm:inline">Keluar</span>
+                    </button>
+                `;
+            }
+        }
+
+        function renderSidebarUserBox() {
+            const box = document.getElementById('sidebarUserBox');
+            if (!currentUser) {
+                box.innerHTML = `<p class="text-xs text-gray-500 italic text-center">Silakan login untuk mengakses fitur lengkap</p>`;
+                return;
+            }
+
+            box.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-polgan-red text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
+                        ${currentUser.name ? currentUser.name.charAt(0) : 'A'}
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="text-xs font-extrabold text-gray-900 truncate">${currentUser.name || 'Anggota Koperasi'}</h4>
+                        <p class="text-[10px] text-gray-500 font-semibold uppercase">${currentUser.role === 'anggota' ? 'Pengkredit' : currentUser.role + ' • ID: ' + currentUser.username}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSidebarNav() {
+            const container = document.getElementById('navigationContainer');
+            if (!currentUser) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let links = [];
+
+            if (currentUser.role === 'anggota') {
+                links = [
+                    { id: 'katalog', label: 'Katalog Barang Kredit', icon: 'fa-laptop' },
+                    { id: 'pengajuan', label: 'Form Kredit Baru', icon: 'fa-file-signature' },
+                    { id: 'status', label: 'Status Pengajuan Saya', icon: 'fa-clock-rotate-left' },
+                    { id: 'waterfall', label: 'Info Metode Waterfall', icon: 'fa-diagram-project' }
+                ];
+            } else if (currentUser.role === 'petugas') {
+                links = [
+                    { id: 'verifikasi', label: 'Verifikasi Pengajuan', icon: 'fa-user-check' },
+                    { id: 'angsuran', label: 'Pencatatan Angsuran', icon: 'fa-cash-register' },
+                    { id: 'katalog', label: 'Lihat Katalog Barang', icon: 'fa-laptop' },
+                    { id: 'waterfall', label: 'Dokumentasi SDLC', icon: 'fa-diagram-project' }
+                ];
+            } else if (currentUser.role === 'admin') {
+                links = [
+                    { id: 'admin', label: 'Dashboard Admin & Master', icon: 'fa-chart-pie' },
+                    { id: 'verifikasi', label: 'Kelola Pengajuan', icon: 'fa-list-check' },
+                    { id: 'angsuran', label: 'Laporan Angsuran', icon: 'fa-receipt' },
+                    { id: 'katalog', label: 'Katalog Barang', icon: 'fa-laptop' },
+                    { id: 'waterfall', label: 'Alur Waterfall TA', icon: 'fa-water' }
+                ];
+            }
+
+            container.innerHTML = links.map(l => `
+                <button onclick="switchTab('${l.id}')" id="navBtn-${l.id}" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-100 transition">
+                    <i class="fa-solid ${l.icon} text-base w-5"></i>
+                    <span>${l.label}</span>
+                </button>
+            `).join('');
+        }
+
+        function switchTab(tabId) {
+            // Guard Check: Memastikan User Sudah Login dan Memiliki Izin Modul
+            if (tabId !== 'login') {
+                if (!currentUser) {
+                    showToast('Silakan masuk (login) terlebih dahulu untuk mengakses sistem!', 'error');
+                    switchTab('login');
+                    return;
+                }
+
+                // Cek khusus: Anggota Pengkredit DILARANG mengakses modul Petugas / Admin
+                if (currentUser.role === 'anggota' && ['verifikasi', 'angsuran', 'admin'].includes(tabId)) {
+                    showToast('AKSES DITOLAK! Anggota Pengkredit tidak memiliki izin mengakses modul Petugas/Admin.', 'error');
+                    return;
+                }
+
+                // Cek apakah halaman yang dituju diperbolehkan untuk Peran / Role aktif
+                const allowedTabs = rolePermissions[currentUser.role] || [];
+                if (!allowedTabs.includes(tabId)) {
+                    showToast(`Akses Ditolak! Akun ${currentUser.role.toUpperCase()} tidak diizinkan mengakses halaman ini.`, 'error');
+                    return;
+                }
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`page-${tabId}`);
+            if (target) target.classList.add('active');
+
+            // Highlight nav
+            document.querySelectorAll('#navigationContainer button').forEach(btn => {
+                btn.classList.remove('bg-polgan-red', 'text-white', 'shadow');
+                btn.classList.add('text-gray-600');
+            });
+
+            const activeBtn = document.getElementById(`navBtn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-polgan-red', 'text-white', 'shadow');
+                activeBtn.classList.remove('text-gray-600');
+            }
+
+            // Sync dynamic view renders
+            if (tabId === 'katalog') renderKatalogItems();
+            if (tabId === 'status') renderStatusPengajuan();
+            if (tabId === 'verifikasi') renderPetugasVerifikasiTable();
+            if (tabId === 'angsuran') updateAngsuranSelectOptions();
+            if (tabId === 'admin') renderAdminTables();
+        }
+
+        function renderKatalogItems() {
+            const grid = document.getElementById('katalogItemsGrid');
+            const search = document.getElementById('katalogSearchInput')?.value.toLowerCase() || '';
+            const kat = document.getElementById('katalogKategoriSelect')?.value || 'ALL';
+
+            const filtered = masterBarang.filter(item => {
+                const matchSearch = item.nama.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search);
+                const matchKat = (kat === 'ALL' || item.kategori === kat);
+                return matchSearch && matchKat;
+            });
+
+            grid.innerHTML = filtered.map(item => {
+                const cicilan6 = Math.round((item.harga * 1.06) / 6);
+                return `
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div class="p-5">
+                            <div class="w-full h-32 bg-gray-50 rounded-xl flex items-center justify-center text-polgan-navy mb-4 border border-gray-100">
+                                <i class="fa-solid ${item.icon} text-5xl"></i>
+                            </div>
+
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[10px] font-bold uppercase bg-blue-50 text-polgan-navy px-2 py-0.5 rounded">${item.kategori}</span>
+                                <span class="text-[10px] text-gray-400 font-bold">Stok: ${item.stok}</span>
+                            </div>
+
+                            <h3 class="font-bold text-gray-900 text-sm leading-snug">${item.nama}</h3>
+                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">${item.desc}</p>
+
+                            <div class="mt-4 pt-3 border-t border-gray-100">
+                                <p class="text-[10px] text-gray-400 uppercase font-semibold">Harga Cash</p>
+                                <p class="text-base font-extrabold text-gray-900">Rp ${item.harga.toLocaleString('id-ID')}</p>
+                                <p class="text-xs font-bold text-polgan-red mt-0.5">Estimasi: Rp ${cicilan6.toLocaleString('id-ID')}/bln (6x)</p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 border-t border-gray-100">
+                            <button onclick="selectBarangForCredit(${item.id})" class="w-full bg-polgan-red hover:bg-polgan-darkred text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center space-x-1.5 shadow">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>Ajukan Kredit Barang</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterKatalog() {
+            renderKatalogItems();
+        }
+
+        function selectBarangForCredit(id) {
+            const found = masterBarang.find(b => b.id === id);
+            if (!found) return;
+
+            selectedItemForCredit = found;
+
+            // Pre-fill user data if logged in as anggota
+            if (currentUser) {
+                document.getElementById('pengkreditNama').value = currentUser.name || '';
+                document.getElementById('pengkreditNoHp').value = currentUser.noHp || '';
+                document.getElementById('pengkreditNoKK').value = currentUser.noKK !== '-' ? currentUser.noKK : '';
+            }
+
+            // Update UI banner
+            document.getElementById('selectedItemTitle').innerText = found.nama;
+            document.getElementById('selectedItemHarga').innerText = `Rp ${found.harga.toLocaleString('id-ID')}`;
+            document.getElementById('selectedItemIcon').className = `fa-solid ${found.icon} text-2xl`;
+
+            recalculateCreditSim();
+            switchTab('pengajuan');
+        }
+
+        function recalculateCreditSim() {
+            if (!selectedItemForCredit) return;
+            const tenor = parseInt(document.getElementById('pengkreditTenor').value);
+            const harga = selectedItemForCredit.harga;
+
+            // 1% interest rate margin per month
+            const totalMargin = harga * (0.01 * tenor);
+            const totalBayar = harga + totalMargin;
+            const cicilanBulanan = Math.round(totalBayar / tenor);
+
+            document.getElementById('simHargaBarang').innerText = `Rp ${harga.toLocaleString('id-ID')}`;
+            document.getElementById('simMarginTotal').innerText = `Rp ${Math.round(totalMargin).toLocaleString('id-ID')}`;
+            document.getElementById('simAngsuranBulanan').innerText = `Rp ${cicilanBulanan.toLocaleString('id-ID')}`;
+        }
+
+        function submitPengajuanKredit(e) {
+            e.preventDefault();
+
+            const nama = document.getElementById('pengkreditNama').value.trim();
+            const noHp = document.getElementById('pengkreditNoHp').value.trim();
+            const noKK = document.getElementById('pengkreditNoKK').value.trim();
+            const nik = document.getElementById('pengkreditNIK').value.trim();
+            const statusType = document.getElementById('pengkreditStatusType').value;
+            const tenor = parseInt(document.getElementById('pengkreditTenor').value);
+
+            // Calculation
+            const harga = selectedItemForCredit.harga;
+            const totalMargin = harga * (0.01 * tenor);
+            const cicilanBulanan = Math.round((harga + totalMargin) / tenor);
+
+            const newApp = {
+                id: `KRD-${new Date().getFullYear()}-00${creditApplications.length + 1}`,
+                nama: nama,
+                noHp: noHp,
+                noKK: noKK,
+                nik: nik,
+                statusType: statusType,
+                barangId: selectedItemForCredit.id,
+                barangNama: selectedItemForCredit.nama,
+                hargaCash: harga,
+                tenor: tenor,
+                angsuranPerBulan: cicilanBulanan,
+                status: 'Menunggu Verifikasi',
+                tanggal: new Date().toISOString().split('T')[0],
+                sisaSmt: tenor
+            };
+
+            creditApplications.unshift(newApp);
+            showToast('Pengajuan kredit barang berhasil dikirim ke Petugas!', 'success');
+            
+            // Redirect to Status page
+            switchTab('status');
+        }
+
+        function renderStatusPengajuan() {
+            const body = document.getElementById('statusPengajuanTableBody');
+            
+            // Filter by current logged in user if anggota
+            let data = creditApplications;
+            if (currentUser && currentUser.role === 'anggota') {
+                data = creditApplications.filter(a => a.nama.toLowerCase().includes(currentUser.name.toLowerCase()));
+            }
+
+            if (data.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-gray-400 italic">
+                            Belum ada riwayat pengajuan kredit barang. Silakan ajukan melalui Katalog.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            body.innerHTML = data.map(app => {
+                let badgeClass = 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                if (app.status === 'Disetujui') badgeClass = 'bg-green-100 text-green-800 border-green-300';
+                if (app.status === 'Ditolak') badgeClass = 'bg-red-100 text-red-800 border-red-300';
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4 font-mono font-bold text-polgan-navy">${app.id}</td>
+                        <td class="p-4">
+                            <p class="font-bold text-gray-900">${app.nama}</p>
+                            <p class="text-xs text-gray-500"><i class="fa-brands fa-whatsapp text-green-600"></i> ${app.noHp}</p>
+                            <span class="text-[10px] bg-gray-100 text-gray-700 font-bold px-1.5 py-0.5 rounded">KK: ${app.noKK}</span>
+                        </td>
+                        <td class="p-4">
+                            <p class="font-semibold text-gray-800">${app.barangNama}</p>
+                            <span class="text-xs text-blue-600 font-bold">${app.tenor} Bulan Tenor</span>
+                        </td>
+                        <td class="p-4">
+                            <p class="font-bold text-gray-900">Rp ${app.hargaCash.toLocaleString('id-ID')}</p>
+                            <p class="text-xs font-extrabold text-polgan-red">Rp ${app.angsuranPerBulan.toLocaleString('id-ID')}/bln</p>
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 text-xs font-bold rounded-full border ${badgeClass}">
+                                ${app.status}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button onclick="printAppNota('${app.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded">
+                                <i class="fa-solid fa-print"></i> Nota
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderPetugasVerifikasiTable() {
+            const body = document.getElementById('petugasVerifikasiTableBody');
+            const filter = document.getElementById('filterStatusPetugas')?.value || 'ALL';
+
+            let filtered = creditApplications;
+            if (filter !== 'ALL') {
+                filtered = creditApplications.filter(a => a.status === filter);
+            }
+
+            if (filtered.length === 0) {
+                body.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400 italic">Tidak ada pengajuan kredit sesuai filter.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = filtered.map((app, idx) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-4 font-bold text-gray-500 text-xs">${idx + 1}</td>
+                    <td class="p-4">
+                        <p class="font-bold text-gray-900">${app.nama}</p>
+                        <p class="text-xs text-gray-500">${app.noHp} (${app.statusType})</p>
+                    </td>
+                    <td class="p-4 font-mono font-bold text-gray-800 text-xs">${app.noKK}</td>
+                    <td class="p-4 text-xs font-semibold text-gray-800">${app.barangNama}</td>
+                    <td class="p-4">
+                        <p class="text-xs font-bold text-polgan-red">Rp ${app.angsuranPerBulan.toLocaleString('id-ID')}/bln</p>
+                        <span class="text-[10px] text-gray-500">${app.tenor} Bulan</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2 py-0.5 text-xs font-bold rounded ${app.status === 'Disetujui' ? 'bg-green-100 text-green-800' : (app.status === 'Ditolak' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')}">
+                            ${app.status}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center space-x-1">
+                        ${app.status === 'Menunggu Verifikasi' ? `
+                            <button onclick="approveCredit('${app.id}')" class="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white font-bold text-xs rounded shadow">
+                                <i class="fa-solid fa-check"></i> Setujui
+                            </button>
+                            <button onclick="rejectCredit('${app.id}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded shadow">
+                                <i class="fa-solid fa-xmark"></i> Tolak
+                            </button>
+                        ` : `
+                            <span class="text-xs text-gray-400 font-semibold">Proses Selesai</span>
+                        `}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveCredit(id) {
+            const app = creditApplications.find(a => a.id === id);
+            if (app) {
+                app.status = 'Disetujui';
+                showToast(`Pengajuan Kredit ${app.id} (${app.nama}) berhasil DISETUJUI!`, 'success');
+                renderPetugasVerifikasiTable();
+                updateAngsuranSelectOptions();
+            }
+        }
+
+        function rejectCredit(id) {
+            const app = creditApplications.find(a => a.id === id);
+            if (app) {
+                app.status = 'Ditolak';
+                showToast(`Pengajuan Kredit ${app.id} DITOLAK.`, 'info');
+                renderPetugasVerifikasiTable();
+            }
+        }
+
+        function updateAngsuranSelectOptions() {
+            const select = document.getElementById('angsuranKreditSelect');
+            const approved = creditApplications.filter(a => a.status === 'Disetujui');
+
+            if (approved.length === 0) {
+                select.innerHTML = `<option value="">Belum ada kredit yang disetujui</option>`;
+                return;
+            }
+
+            select.innerHTML = approved.map(a => `
+                <option value="${a.id}">${a.id} - ${a.nama} (${a.barangNama})</option>
+            `).join('');
+
+            loadAngsuranDetailInfo();
+        }
+
+        function loadAngsuranDetailInfo() {
+            const selectVal = document.getElementById('angsuranKreditSelect').value;
+            const infoBox = document.getElementById('angsuranInfoBox');
+
+            const found = creditApplications.find(a => a.id === selectVal);
+            if (!found) {
+                infoBox.classList.add('hidden');
+                return;
+            }
+
+            infoBox.classList.remove('hidden');
+            document.getElementById('infoNama').innerText = found.nama;
+            document.getElementById('infoKK').innerText = found.noKK;
+            document.getElementById('infoNominalCicilan').innerText = `Rp ${found.angsuranPerBulan.toLocaleString('id-ID')}`;
+            document.getElementById('infoSisaTenor').innerText = `${found.sisaSmt} x Angsuran`;
+            document.getElementById('bayarNominalInput').value = found.angsuranPerBulan;
+        }
+
+        function handleProcessPayment(e) {
+            e.preventDefault();
+            const kreditId = document.getElementById('angsuranKreditSelect').value;
+            const nominal = parseInt(document.getElementById('bayarNominalInput').value);
+            const ket = document.getElementById('bayarKeteranganInput').value.trim();
+
+            const credit = creditApplications.find(a => a.id === kreditId);
+            if (!credit) return;
+
+            credit.sisaSmt = Math.max(0, credit.sisaSmt - 1);
+
+            paymentLogs.unshift({
+                id: `PAY-${Math.floor(100 + Math.random() * 900)}`,
+                kreditId: kreditId,
+                nama: credit.nama,
+                nominal: nominal,
+                tgl: new Date().toISOString().split('T')[0],
+                ket: ket,
+                petugas: currentUser ? currentUser.name : 'Petugas KSPS'
+            });
+
+            showToast('Pembayaran angsuran berhasil dicatat!', 'success');
+            renderRiwayatAngsuran();
+            loadAngsuranDetailInfo();
+        }
+
+        function renderRiwayatAngsuran() {
+            const body = document.getElementById('riwayatAngsuranTableBody');
+            body.innerHTML = paymentLogs.map(log => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3 font-mono font-semibold">${log.tgl}</td>
+                    <td class="p-3 font-bold text-gray-800">${log.nama}</td>
+                    <td class="p-3 text-gray-600">${log.ket}</td>
+                    <td class="p-3 font-extrabold text-green-700">Rp ${log.nominal.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-gray-500">${log.petugas}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminTables() {
+            // Stats
+            document.getElementById('statTotalAnggota').innerText = systemUsers.length;
+            document.getElementById('statTotalPengajuan').innerText = creditApplications.length;
+            document.getElementById('statTotalBarang').innerText = masterBarang.length;
+
+            // Admin Barang Table
+            const barangBody = document.getElementById('adminBarangTableBody');
+            barangBody.innerHTML = masterBarang.map(b => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3 font-mono font-bold text-blue-700">${b.kode}</td>
+                    <td class="p-3 font-bold text-gray-800">${b.nama}</td>
+                    <td class="p-3"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-semibold">${b.kategori}</span></td>
+                    <td class="p-3 font-bold text-gray-900">${b.stok} unit</td>
+                    <td class="p-3 font-extrabold text-gray-900">Rp ${b.harga.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteBarang(${b.id})" class="text-red-600 hover:text-red-800 font-bold"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Admin Users Table
+            const usersBody = document.getElementById('adminUsersTableBody');
+            usersBody.innerHTML = systemUsers.map(u => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3 font-mono">USR-00${u.id}</td>
+                    <td class="p-3 font-bold text-gray-800">${u.name || 'Anggota Koperasi'}</td>
+                    <td class="p-3 font-mono font-semibold text-polgan-navy">${u.username}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 font-bold uppercase rounded text-[10px] ${u.role === 'admin' ? 'bg-purple-100 text-purple-800' : (u.role === 'petugas' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800')}">${u.role}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function switchAdminSubTab(subTab) {
+            ['barang', 'users', 'structure'].forEach(st => {
+                document.getElementById(`adminSubTab-${st}`).classList.add('hidden');
+                document.getElementById(`adminTabBtn-${st}`).classList.remove('text-polgan-red', 'border-b-2', 'border-polgan-red', 'bg-white');
+                document.getElementById(`adminTabBtn-${st}`).classList.add('text-gray-600');
+            });
+
+            document.getElementById(`adminSubTab-${subTab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`adminTabBtn-${subTab}`);
+            activeBtn.classList.add('text-polgan-red', 'border-b-2', 'border-polgan-red', 'bg-white');
+            activeBtn.classList.remove('text-gray-600');
+        }
+
+        function openModalAddBarang() {
+            document.getElementById('modalAddBarang').classList.remove('hidden');
+        }
+
+        function closeModalAddBarang() {
+            document.getElementById('modalAddBarang').classList.add('hidden');
+        }
+
+        function handleSaveBarang(e) {
+            e.preventDefault();
+            const kode = document.getElementById('addKodeBarang').value.trim();
+            const nama = document.getElementById('addNamaBarang').value.trim();
+            const kat = document.getElementById('addKategoriBarang').value;
+            const harga = parseInt(document.getElementById('addHargaBarang').value);
+            const stok = parseInt(document.getElementById('addStokBarang').value);
+
+            masterBarang.push({
+                id: masterBarang.length + 1,
+                kode: kode,
+                nama: nama,
+                kategori: kat,
+                harga: harga,
+                stok: stok,
+                icon: kat.includes('Laptop') ? 'fa-laptop' : 'fa-box',
+                desc: 'Produk baru ditambahkan oleh Admin.'
+            });
+
+            showToast('Barang baru berhasil ditambahkan ke Katalog!', 'success');
+            closeModalAddBarang();
+            renderAdminTables();
+            renderKatalogItems();
+        }
+
+        function deleteBarang(id) {
+            masterBarang = masterBarang.filter(b => b.id !== id);
+            showToast('Barang berhasil dihapus.', 'info');
+            renderAdminTables();
+            renderKatalogItems();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            if (type === 'success') toastIcon.className = 'fa-solid fa-circle-check text-green-400 text-lg';
+            else if (type === 'error') toastIcon.className = 'fa-solid fa-triangle-exclamation text-red-400 text-lg';
+            else toastIcon.className = 'fa-solid fa-circle-info text-blue-400 text-lg';
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        function printAppNota(id) {
+            window.print();
+        }
+
+        function printPaymentReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
